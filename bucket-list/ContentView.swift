@@ -13,7 +13,7 @@ struct ContentView: View {
     @Query() private var bucketListItems: [BucketListItem]
     @State private var showingCreateSheet = false
     @State private var showingImportSheet = false
-    @State private var selectedItem: BucketListItem?
+    @State private var selectedBucketListItem: BucketListItem?
 
     var body: some View {
         NavigationSplitView {
@@ -44,13 +44,13 @@ struct ContentView: View {
                     .padding()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    List(selection: $selectedItem) {
+                    List(selection: $selectedBucketListItem) {
                         ForEach(bucketListItems) { item in
                             NavigationLink(value: item) {
                                 BucketListItemRowView(item: item)
                             }
                         }
-                        .onDelete(perform: deleteItems)
+                        .onDelete(perform: deleteBucketListItems)
                     }
                     .listStyle(.sidebar)
                 }
@@ -78,8 +78,8 @@ struct ContentView: View {
                 CSVImportView()
             }
         } detail: {
-            if let selectedItem = selectedItem {
-                BucketListItemView(item: selectedItem)
+            if let selectedBucketListItem = selectedBucketListItem {
+                BucketListItemView(item: selectedBucketListItem)
             } else if bucketListItems.isEmpty {
                 EmptyStateDetailView(showingCreateSheet: $showingCreateSheet)
             } else {
@@ -89,12 +89,12 @@ struct ContentView: View {
         .navigationSplitViewStyle(.balanced)
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteBucketListItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
                 let itemToDelete = bucketListItems[index]
-                if selectedItem == itemToDelete {
-                    selectedItem = nil
+                if selectedBucketListItem == itemToDelete {
+                    selectedBucketListItem = nil
                 }
                 modelContext.delete(itemToDelete)
             }
