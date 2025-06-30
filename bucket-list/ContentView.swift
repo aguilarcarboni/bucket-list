@@ -7,8 +7,25 @@
 
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct ContentView: View {
+    var body: some View {
+        TabView {
+            BucketListView()
+                .tabItem {
+                    Label("List", systemImage: "list.bullet")
+                }
+            
+            MapView()
+                .tabItem {
+                    Label("Map", systemImage: "map")
+                }
+        }
+    }
+}
+
+struct BucketListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query() private var bucketListItems: [BucketListItem]
     @State private var showingCreateSheet = false
